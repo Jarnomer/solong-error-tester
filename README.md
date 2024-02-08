@@ -6,6 +6,8 @@ Basic error handling tester for 42 so_long project.
 
 Since tester was designed to check error handling in pre-initialization phase, it is recommended to disable mlx init for testing purposes.
 
+Should be ran from directory where so_long executable is. Does not test leaks. 
+
 Tests:
 
 - Too few arguments
