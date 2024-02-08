@@ -24,4 +24,4 @@ Tests:
 - Map has no path to all pickup(s)
 - Map has no path to exit
 
-![EXAMPLE] (example.png)
+![example](example.png)
