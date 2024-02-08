@@ -23,3 +23,5 @@ Tests:
 - Map has invalid characters
 - Map has no path to all pickup(s)
 - Map has no path to exit
+
+![EXAMPLE] (example.png)
