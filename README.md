@@ -4,7 +4,7 @@
 
 Basic error handling tester for 42 so_long project.
 
-Since tester was designed to check map error handling which occurs before minilibx/mlx is used, it is recommended to run the tester before implementing them or disable them for testing purposes. Otherwise so_long will launched each time the test fails.
+Since tester was designed to check map error handling which occurs before minilibx/mlx is used, it is recommended to run the tester before implementing them or disable them for testing purposes. Otherwise so_long will be launched each time the test fails.
 
 Should be ran from directory where so_long executable is. Does not test leaks. 
 
