@@ -22,10 +22,10 @@ RM_CMD="rm -rf"
 ECHO_CMD="echo -n"
 NAME=so_long
 BINPATH=./
-TEST_DIR=dir_tmp
+TEST_DIR=test_tmp_dir
 TEST_MAP=test_map.ber
-MAP_NO_EXT=test_map_no_ext
-TEST_LOG=so_long_result.log
+MAP_NO_EXT=test_map
+TEST_LOG=so_long_test.log
 
 TESTS_PASSED=0
 TESTS_FAILED=0
@@ -39,7 +39,7 @@ TEST_LEAKS=0
 
 TIMEOUT_FULL=""
 TIMEOUT_CMD=$(which timeout)
-TIMEOUT_SEC=0.5
+TIMEOUT_SEC=0.3
 
 if [ -n "$TIMEOUT_CMD" ]; then
   TIMEOUT_FULL="$TIMEOUT_CMD $TIMEOUT_SEC"

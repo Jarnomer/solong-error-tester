@@ -1,6 +1,7 @@
 #! /bin/bash
 
 source "$(dirname "$0")/variables.sh"
+source "$(dirname "$0")/extras.sh"
 
 print_test_title() {
   printf "\n${BB}${TEST_CURRENT}${RC}\t${C}$1${RC}    \t"
@@ -14,6 +15,9 @@ print_main_title() {
   printf "${BB}EXITCODE:\t${RC}Exit code is not zero, indicating error\n"
   printf "${BB}STDERR:  \t${RC}Error message was written to stderr\n"
   printf "${BB}MESSAGE: \t${RC}Error included 'Error' and your message\n\n"
+
+  run_extra_tests
+
   printf "TEST\tDESCRIPTIONS\t\tEXITCODE\tSTDERR\t\tMESSAGE\t\tLEAKS\n"
   printf "${P}${FLLTITLE}${FLLTITLE}${FLLTITLE}${FLLTITLE}${RC}"
 }
@@ -26,7 +30,7 @@ print_summary() {
   if [ $TESTS_FAILED -eq 0 ]; then
     printf "${GB}All tests passed!${RC}\n"
   else
-    printf "Failed ${RB}$TESTS_FAILED${RC} tests!${RC}\n"
+    printf "Failed ${RB}$TESTS_FAILED${RC} test(s)!${RC}\n"
   fi
 }
 
@@ -40,12 +44,12 @@ print_usage() {
 }
 
 setup_test_files() {
-  touch ${TEST_MAP}
-  mkdir ${TEST_DIR}
+  touch "${TEST_MAP}"
+  mkdir "${TEST_DIR}"
 }
 
 cleanup() {
-  ${RM_CMD} ${TEST_DIR} ${TEST_MAP} ${TEST_LOG} ${MAP_NO_EXT}*
+  ${RM_CMD} "${TEST_DIR}" "${TEST_MAP}" "${TEST_LOG}" "${MAP_NO_EXT}"*
 }
 
 handle_ctrlc() {
@@ -55,13 +59,21 @@ handle_ctrlc() {
 }
 
 kill_process() {
-  local pid=$(pgrep -f "${NAME}")
+  pid=$(pgrep -f "${NAME}")
 
   if [ -n "$pid" ]; then
-    kill -9 $pid >/dev/null 2>&1
+    kill -9 "$pid" > /dev/null 2>&1
     return 0
   fi
   return 1
+}
+
+check_bonus_rule() {
+  if grep -q "^bonus:" Makefile; then
+    echo "0"
+  else
+    echo "1"
+  fi
 }
 
 check_requirements() {
@@ -80,7 +92,7 @@ check_leaks() {
   base_cmd=$(echo "${BINPATH}${NAME}" | sed "s|$TIMEOUT_FULL ||")
   valgrind_cmd="$VALGRIND_FULL --log-file=/dev/stdout $base_cmd"
 
-  leak_output=$(eval "$valgrind_cmd" 2>/dev/null)
+  leak_output=$(eval "$valgrind_cmd" 2> /dev/null)
 
   open_fds=$(echo "$leak_output" | grep -A 1 "FILE DESCRIPTORS" |
     grep -o '[0-9]\+ open' | grep -o '[0-9]\+' | sort -nr | head -1)
@@ -106,14 +118,14 @@ check_leaks() {
 }
 
 message_checker() {
-  error_message=$(head -1 <${TEST_LOG})
-  line_count=$(wc -l <${TEST_LOG})
+  error_message=$(head -1 < "${TEST_LOG}")
+  line_count=$(wc -l < "${TEST_LOG}")
   local checker=0
 
   if [[ $error_message == *"Error"* ]]; then
     checker=$((checker + 1))
   fi
-  if [ $line_count -eq 2 ]; then
+  if [ "$line_count" -eq 2 ]; then
     checker=$((checker + 1))
   fi
   if [ $checker -eq 2 ]; then
@@ -136,10 +148,10 @@ stderr_checker() {
 }
 
 exitcode_checker() {
-  if [ $1 -eq 139 ]; then
+  if [ "$1" -eq 139 ]; then
     printf "${YB}[SEGV]${RC}"
     return 1
-  elif [ $1 -eq 0 ]; then
+  elif [ "$1" -eq 0 ]; then
     printf "${RB}[KO]${RC}"
     return 1
   else
@@ -149,8 +161,8 @@ exitcode_checker() {
 }
 
 verbose_message() {
-  error=$(head -1 <${TEST_LOG})
-  message=$(tail -n +2 ${TEST_LOG})
+  error=$(head -1 < "${TEST_LOG}")
+  message=$(tail -n +2 "${TEST_LOG}")
 
-  printf "\n${BB}MESSAGE:${RC} $error ${RC}| $message ${RC}\n"
+  printf "\n\t${BB}ERROR MESSAGE:${RC}\t\t$error ${RC}| $message ${RC}"
 }
