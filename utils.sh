@@ -15,9 +15,6 @@ print_main_title() {
   printf "${BB}EXITCODE:\t${RC}Exit code is not zero, indicating error\n"
   printf "${BB}STDERR:  \t${RC}Error message was written to stderr\n"
   printf "${BB}MESSAGE: \t${RC}Error included 'Error' and your message\n\n"
-
-  run_extra_tests
-
   printf "TEST\tDESCRIPTIONS\t\tEXITCODE\tSTDERR\t\tMESSAGE\t\tLEAKS\n"
   printf "${P}${FLLTITLE}${FLLTITLE}${FLLTITLE}${FLLTITLE}${RC}"
 }
@@ -40,6 +37,7 @@ print_usage() {
   printf "  ${GB}-t${RC}, ${G}--test ID  ${P}Run specific test by ID${RC}\n"
   printf "  ${GB}-v${RC}, ${G}--verbose  ${P}Verbose error messages${RC}\n"
   printf "  ${GB}-l${RC}, ${G}--leaks    ${P}Test leaks with valgrind${RC}\n"
+  printf "  ${GB}-e${RC}, ${G}--extra    ${P}Run extra tests${RC}\n"
   printf "  ${GB}-h${RC}, ${G}--help     ${P}Show this help message${RC}\n\n"
 }
 
@@ -50,6 +48,7 @@ setup_test_files() {
 
 cleanup() {
   ${RM_CMD} "${TEST_DIR}" "${TEST_MAP}" "${TEST_LOG}" "${MAP_NO_EXT}"*
+  make fclean >/dev/null
 }
 
 handle_ctrlc() {
@@ -62,7 +61,7 @@ kill_process() {
   pid=$(pgrep -f "${NAME}")
 
   if [ -n "$pid" ]; then
-    kill -9 "$pid" > /dev/null 2>&1
+    kill -9 "$pid" >/dev/null 2>&1
     return 0
   fi
   return 1
@@ -92,7 +91,7 @@ check_leaks() {
   base_cmd=$(echo "${BINPATH}${NAME}" | sed "s|$TIMEOUT_FULL ||")
   valgrind_cmd="$VALGRIND_FULL --log-file=/dev/stdout $base_cmd"
 
-  leak_output=$(eval "$valgrind_cmd" 2> /dev/null)
+  leak_output=$(eval "$valgrind_cmd" 2>/dev/null)
 
   open_fds=$(echo "$leak_output" | grep -A 1 "FILE DESCRIPTORS" |
     grep -o '[0-9]\+ open' | grep -o '[0-9]\+' | sort -nr | head -1)
@@ -118,8 +117,8 @@ check_leaks() {
 }
 
 message_checker() {
-  error_message=$(head -1 < "${TEST_LOG}")
-  line_count=$(wc -l < "${TEST_LOG}")
+  error_message=$(head -1 <"${TEST_LOG}")
+  line_count=$(wc -l <"${TEST_LOG}")
   local checker=0
 
   if [[ $error_message == *"Error"* ]]; then
@@ -161,8 +160,8 @@ exitcode_checker() {
 }
 
 verbose_message() {
-  error=$(head -1 < "${TEST_LOG}")
+  error=$(head -1 <"${TEST_LOG}")
   message=$(tail -n +2 "${TEST_LOG}")
 
-  printf "\n\t${BB}ERROR MESSAGE:${RC}\t\t$error ${RC}| $message ${RC}"
+  printf "\n\t${BB}ERROR MESSAGE:${RC}\t\t$error${RC} | $message ${RC}"
 }
