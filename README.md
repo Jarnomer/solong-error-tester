@@ -3,11 +3,11 @@
 </h1>
 
 <p align="center">
-  <b><i>Comprehensive error testing framework for so-long 🔍</i></b><br>
+  <b><i>Comprehensive error tester for so-long 🔍</i></b><br>
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Tests-30%2B-lightgreen?style=for-the-badge" alt="tests">
+  <img src="https://img.shields.io/badge/Tests-30-lightgreen?style=for-the-badge" alt="tests">
   <img src="https://img.shields.io/badge/Compatible-macOS%20%26%20Linux-lightblue?style=for-the-badge" alt="compatibility">
   <img src="https://img.shields.io/badge/Category-Error%20Handling-pink?style=for-the-badge" alt="category">
 </p>
@@ -20,7 +20,6 @@
 <div align="center">
 
 ## Table of Contents
-
 [📝 Overview](#-overview)  
 [🛠️ Installation](#️-installation)  
 [⚡ Usage](#-usage)  
@@ -31,7 +30,7 @@
 
 ## 📝 Overview
 
-This tester is designed to rigorously evaluate the **error handling** capabilities of your so_long project. It focuses on ensuring your program properly handles invalid inputs, malformed maps, and unexpected scenarios.
+This tester is designed to evaluate the **error handling** capabilities of your so_long project. It focuses on ensuring your program properly handles invalid inputs, malformed maps, and unexpected scenarios.
 
 The tester checks:
 - **Logic errors** (invalid arguments, file permissions, etc.)
@@ -43,7 +42,7 @@ The tester checks:
 
 ## 🛠️ Installation
 
-No build process is required. Clone the repository into your project directory:
+Clone the repository into your project directory:
 
 ```bash
 git clone https://github.com/Jarnomer/so_long-error-tester.git
